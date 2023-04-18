@@ -23,6 +23,7 @@ import {
 const initialState = {
     access: localStorage.getItem('access'),
     refresh: localStorage.getItem('refresh'),
+    error: null,
     isAuthenticated: null,
     user: null
 };
@@ -67,9 +68,18 @@ export default function(state = initialState, action) {
                 ...state,
                 user: null
             }
+        case LOGIN_FAIL:
+
+
+            return{
+                ...state ,
+                error: payload
+
+
+            }
         case GOOGLE_AUTH_FAIL:
         case FACEBOOK_AUTH_FAIL:
-        case LOGIN_FAIL:
+
         case SIGNUP_FAIL:
         case LOGOUT:
             localStorage.removeItem('access');

@@ -1,3 +1,4 @@
+
 import React, { Fragment, useState } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
@@ -14,24 +15,24 @@ const Navbar = ({ logout, isAuthenticated }) => {
     const guestLinks = () => (
         <Fragment>
             <li className='nav-item'>
-                <Link className='nav-link' to='/login'>Login</Link>
+                <Link className='nav-link' to='/login'>Ввійти</Link>
             </li>
             <li className='nav-item'>
-                <Link className='nav-link' to='/signup'>Sign Up</Link>
+                <Link className='nav-link' to='/signup'>Зареєструватись</Link>
             </li>
         </Fragment>
     );
 
     const authLinks = () => (
         <li className='nav-item'>
-            <a className='nav-link' href='#!' onClick={logout_user}>Logout</a>
+            <a className='nav-link' href='#!' onClick={logout_user}>Вийти з аккаунта</a>
         </li>
     );
 
     return (
         <Fragment>
             <nav className='navbar navbar-expand-lg navbar-light bg-light'>
-                <Link className='navbar-brand' to='/'>Auth System</Link>
+                <Link className='navbar-brand' to='/'>Сайт для Тестувань</Link>
                 <button 
                     className='navbar-toggler' 
                     type='button' 
@@ -45,10 +46,11 @@ const Navbar = ({ logout, isAuthenticated }) => {
                 </button>
                 <div className='collapse navbar-collapse' id='navbarNav'>
                     <ul className='navbar-nav'>
-                        <li className='nav-item active'>
-                            <Link className='nav-link' to='/'>Home <span className='sr-only'>(current)</span></Link>
-                        </li>
+                        
                         {isAuthenticated ? authLinks() : guestLinks()}
+
+            <Link className='nav-link' to='tests/'>Тести </Link>
+
                     </ul>
                 </div>
             </nav>

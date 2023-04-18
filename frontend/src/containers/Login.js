@@ -1,23 +1,31 @@
-import React, { useState } from 'react';
+import React, { useState , Fragment } from 'react';
 import { Link, Redirect } from 'react-router-dom';
 import { connect } from 'react-redux';
 import { login } from '../actions/auth';
 import axios from 'axios';
 
-const Login = ({ login, isAuthenticated }) => {
+const Login = ({ login, isAuthenticated , }) => {
     const [formData, setFormData] = useState({
         email: '',
         password: '' 
     });
+    const [Error , setError] = useState()
+
 
     const { email, password } = formData;
-
     const onChange = e => setFormData({ ...formData, [e.target.name]: e.target.value });
-
     const onSubmit = e => {
         e.preventDefault();
 
-        login(email, password);
+        let login_state = login(email, password)
+
+        login_state.then((value)=> {
+        console.log(value)
+
+            try{
+            setError(value.data.detail)
+            }catch{}
+        })
     };
 
     const continueWithGoogle = async () => {
@@ -44,10 +52,14 @@ const Login = ({ login, isAuthenticated }) => {
         return <Redirect to='/' />
     }
 
+
     return (
         <div className='container mt-5'>
+
             <h1>Sign In</h1>
+            <h2>{Error} </h2>
             <p>Sign into your Account</p>
+
             <form onSubmit={e => onSubmit(e)}>
                 <div className='form-group'>
                     <input
@@ -73,6 +85,7 @@ const Login = ({ login, isAuthenticated }) => {
                     />
                 </div>
                 <button className='btn btn-primary' type='submit'>Login</button>
+
             </form>
             <button className='btn btn-danger mt-3' onClick={continueWithGoogle}>
                 Continue With Google

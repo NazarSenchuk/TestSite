@@ -9,17 +9,21 @@ import ResetPassword from './containers/ResetPassword';
 import ResetPasswordConfirm from './containers/ResetPasswordConfirm';
 import Facebook from './containers/Facebook';
 import Google from './containers/Google';
-
+import Result from './containers/Result'
 import { Provider } from 'react-redux';
 import store from './store';
-
+import './App.css'
 import Layout from './hocs/Layout';
-
+import Tests from './containers/Tests'
+import TestPage from './containers/Test'
 const App = () => (
     <Provider store={store}>
         <Router>
             <Layout>
                 <Switch>
+                    <Route exact path = '/result/:pk' component = {Result} />
+                    <Route exact path ='/tests/' component={Tests} />
+                    <Route exact path = '/test/:pk' component = {TestPage}/>
                     <Route exact path='/' component={Home} />
                     <Route exact path='/login' component={Login} />
                     <Route exact path='/signup' component={Signup} />

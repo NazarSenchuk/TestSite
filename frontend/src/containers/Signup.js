@@ -6,6 +6,7 @@ import axios from 'axios';
 
 const Signup = ({ signup, isAuthenticated }) => {
     const [accountCreated, setAccountCreated] = useState(false);
+    const [Error , setError] = useState()
     const [formData, setFormData] = useState({
         first_name: '',
         last_name: '',
@@ -22,8 +23,16 @@ const Signup = ({ signup, isAuthenticated }) => {
         e.preventDefault();
 
         if (password === re_password) {
-            signup(first_name, last_name, email, password, re_password);
+            let signup_state = signup(first_name, last_name, email, password, re_password);
+
+            signup_state.then((value)=> {
+            console.log(value)
+            setError(value.data.email)
+        })
+
+        if( !Error){
             setAccountCreated(true);
+        }
         }
     };
 
@@ -50,13 +59,17 @@ const Signup = ({ signup, isAuthenticated }) => {
     if (isAuthenticated) {
         return <Redirect to='/' />
     }
+    if( !Error){
     if (accountCreated) {
-        return <Redirect to='/login' />
+        console.log(Error)
+
+    }
     }
 
     return (
         <div className='container mt-5'>
             <h1>Sign Up</h1>
+            <h2> {Error}</h2>
             <p>Create your Account</p>
             <form onSubmit={e => onSubmit(e)}>
                 <div className='form-group'>

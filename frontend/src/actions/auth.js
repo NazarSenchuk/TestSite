@@ -20,7 +20,9 @@ import {
     FACEBOOK_AUTH_FAIL,
     LOGOUT
 } from './types';
-
+function LoginError(props) {
+  return <h1>Ви ввели не вірні дані</h1>;
+}
 export const load_user = () => async dispatch => {
     if (localStorage.getItem('access')) {
         const config = {
@@ -161,7 +163,7 @@ export const login = (email, password) => async dispatch => {
 
     try {
         const res = await axios.post(`${process.env.REACT_APP_API_URL}/auth/jwt/create/`, body, config);
-
+        console.log(res)
         dispatch({
             type: LOGIN_SUCCESS,
             payload: res.data
@@ -169,9 +171,15 @@ export const login = (email, password) => async dispatch => {
 
         dispatch(load_user());
     } catch (err) {
+
+
         dispatch({
-            type: LOGIN_FAIL
+            type: LOGIN_FAIL,
+
+
+
         })
+        return err.response
     }
 };
 
@@ -192,9 +200,11 @@ export const signup = (first_name, last_name, email, password, re_password) => a
             payload: res.data
         });
     } catch (err) {
+        console.log(err.response)
         dispatch({
             type: SIGNUP_FAIL
         })
+        return err.response
     }
 };
 
