@@ -1,4 +1,7 @@
+from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.core.cache import cache
+from django.core.cache.backends.base import DEFAULT_TIMEOUT
 from django.shortcuts import render
 from django.urls import reverse_lazy
 from rest_framework.decorators import api_view
@@ -8,12 +11,12 @@ from rest_framework.response import Response
 from .functions import has_is_owner, get_rating
 from .models import Test, Question, Results, VotesMember
 from .serializers import TestSerializer, ResultSerializer
-
+CACHE_TTL = getattr(settings, "CACHE_TTL",DEFAULT_TIMEOUT)
 
 # Create your views here.
 @api_view(["GET"])
 def get_tests(request):
-    data = Test.objects.all()
+    data =get_tests_cache()
     serializer = TestSerializer(data, many=True)
     return Response(serializer.data)
 
@@ -21,8 +24,8 @@ def get_tests(request):
 @api_view(["GET", "DELETE"])
 def get_test(request, pk):
     if request.method == "GET":
+        data  = get_test_cache(pk)
 
-        data = Test.objects.get(id=pk)
         votes_mamber, created = VotesMember.objects.get_or_create(user=request.user, test=data)
         serializer = TestSerializer(data, many=False)
         return Response(serializer.data)
@@ -71,3 +74,32 @@ def get_result(request, pk):
         return Response(to_json)
     serializer = ResultSerializer(result, many=False)
     return Response(serializer.data)
+def  get_test_cache(id):
+    if cache.get(id):
+        test = cache.get(id)
+        print("DATA FROM CACHE")
+        return test
+    else:
+        try:
+            test = Test.objects.get(id =id)
+            cache.set(id,test)
+            print("DATA FROM DB")
+            return test
+        except:
+            return Response("ERROR_CACHE_TEST")
+def get_tests_cache():
+    tests_cache  = cache.get("tests")
+    if tests_cache:
+        tests =  tests_cache
+        print("TESTS FROM CACHE")
+        return tests
+    else:
+        try:
+            tests = Test.objects.all()
+
+            cache.set("tests", tests)
+            print("TESTS FROM DB")
+
+            return tests
+        except:
+                return Response("ERROR_CACHE_TESTS")
